@@ -1,0 +1,60 @@
+<!-- <% layout('layouts/boilerplate') %>
+    <h1>Edit Service</h1>
+    <form action="/services/<%= service._id %>?_method=PUT " method="post">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name = "service[title]" value="<%= service.title %>">
+        </div>
+        <div>
+            <label for="category">Category</label>
+            <input type="text" id="category" name = "service[category]" value="<%= service.category %>">
+        </div>
+        <button>Add Service</button>
+    </form> -->
+
+
+
+
+
+    <% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">Edit Service</h1>
+    <div class="col-6 offset-3">
+        <form action="/services/<%=service._id%>?_method=PUT" method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="service[title]"
+                    value="<%=service.title %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="service[location]"
+                    value="<%=service.location %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="image">Image Url</label>
+                <input class="form-control" type="text" id="image" name="service[image]"
+                    value="<%=service.image %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Service Price</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="price-label">$</span>
+                    <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                        aria-describedby="price-label" name="service[price]" value="<%=service.price %>">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="description"
+                    name="service[description]"><%= service.description%></textarea>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Service</button>
+            </div>
+        </form>
+        <a href="/services/<%= service._id%>">Back To Service</a>
+
+    </div>
+</div>

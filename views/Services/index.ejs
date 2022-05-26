@@ -1,0 +1,53 @@
+<!-- <% layout('layouts/boilerplate') %> 
+<h1> All Services</h1>
+<div>
+    <a href="/services/new">Add Services</a>
+</div>
+<% for (let service of services) {%> 
+    <div class="card" mb-3>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="<%= service.image %>" alt="" class="img-fluid">
+            </div>
+            <div class="col-mg-8">
+                <div class="card-body">
+                    <h5 class="card-title"><%= service.title %></h5>
+                    <p class="card-text"><%= service.description %></p>
+                    <p class="card-text">
+                        <small class="text-muted"><%= service.location %></small>
+                    </p>
+                    <a href="/services/<%= service._id %>" class="btn btn-primary">View Service</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<%}%> -->
+
+
+
+<% layout('layouts/boilerplate')%>
+
+<h1>All Services</h1>
+<div>
+    <a href="/services/new">Add Services</a>
+</div>
+<% for (let service of services){%>
+<div class="card" mb-3>
+    <div class="row">
+        <div class="col-md-4">
+            <img class="img-fluid" alt="" src="<%=service.image%>">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body"> 
+                <h5 class="card-title"><%= service.title %> </h5>
+                <p class="card-text"><%= service.description %></p>
+                <p class="card-text">
+                    <small class="text-muted"><%= service.location%></small>
+                </p>
+                <a class="btn btn-primary" href="/services/<%=service._id%>">View <%=service.title%></a>
+            </div>
+        </div>
+    </div>
+</div>
+<% }%>
