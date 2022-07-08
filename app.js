@@ -1,27 +1,41 @@
+if (process.env.NODE_ENV  !==  "production") {
+    require('dotenv').config()
+}
 const express = require('express');  // Requiring express
 const path = require('path');  
+const wrapAsync = require('./utils/wrapAsync');
+const ExpressError = require('./utils/ExpressError');
 const mongoose = require('mongoose');
-const ejsMate = require('ejs-mate')
-const methodOverride = require('method-override')
-const Service = require('./models/service.js');
+const ejsMate = require('ejs-mate');
+const methodOverride = require('method-override');
+const session = require('express-session')
+const flash = require('connect-flash')
+const passport = require('passport');
+const localStrategy = require('passport-local');
+const User = require('./models/user')
 
+const MongoStore = require('connect-mongo');
 
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/doma';
 
-mongoose.connect('mongodb://localhost:27017/doma',{
+mongoose.connect( dbUrl ,{
     useNewUrlParser: true, 
     useUnifiedTopology: true
 })
     .then(() => console.log("MongoDB connection established"))
     .catch((e) => {
-        console.log('MongoDB connection failed')
-        console.log(e)
-    })   
+        console.log('MongoDB connection failed');
+        console.log(e);
+    });
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, "connection error:"));
-// db.once("open", () => {
-//     console.log("Database connected");
-// })
+
+
+
+const userRoutes = require('./routes/users')
+const serviceRoutes = require('./routes/services');
+const reviewRoutes = require('./routes/reviews');
+
+
 
 const app = express()
 
@@ -32,50 +46,83 @@ app.set('view engine', 'ejs');  // Setting the view engine to ejs
 
 app.use(express.urlencoded({ extended: true}));  // this tells express to parse the body of the url sent by the post request 
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')))
 
+const secret = process.env.SESSION_SECRET || 'thisisasecret'
 
-
-app.get('/services', async (req,res) => {  // route to display all services
-    const services = await Service.find({});
-    res.render('Services/index', { services })
-})
-
-app.get('/services/new', (req,res) => {  // route to serve form that will create new services
-    res.render('Services/new')
-})
-
-app.post('/services', async(req,res) => {  // route to post the newly created service
-    const service = new Service(req.body.service) 
-    await service.save()
-    res.redirect(`/services/${service._id}`)
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
 })
 
 
-app.get('/services/:id', async (req,res) => { // route to display the details of a specific service
-    const {id} = req.params
-    const service = await Service.findById(id);
-    res.render('Services/details', {service, id})
+
+
+const sessionConfig = {
+    store,
+    name: 'session',
+    secret,
+    resave: false,
+    saveUninitialized: true,
+    cookie:{
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+} 
+
+app.use(session(sessionConfig));
+app.use(flash());
+
+
+
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(User.createStrategy())
+//  passport.use(new localStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+
+app.use((req,res,next) =>{
+    res.locals.user = req.user;
+    res.locals.success = req.flash('success')
+    res.locals.error = req.flash('error')
+    //console.log(req.session)
+    next()
 })
 
-app.get('/services/:id/edit', async (req,res) => {  // route to serve the edit form
-    const {id } = req.params
-    const service = await Service.findById(id)
-    res.render('Services/edit', { id,service }) 
+
+app.use('/', userRoutes)
+app.use('/services', serviceRoutes)
+app.use('/services/:id/reviews', reviewRoutes)
+
+
+
+
+app.all('*', (req,res,next) =>{ // for all types of request, for all routes
+    next(new ExpressError('Page not found',404))
 })
 
-app.put('/services/:id', async (req,res) => { // route to edit the entry
-    const { id } = req.params
-    console.log(req.body.service)
-    const service = await Service.findByIdAndUpdate(id,{...req.body.service})
-    res.redirect(`/services/${service._id}`)
-})
-
-app.delete('/services/:id', async(req,res) => {
-    const { id } = req.params
-    await Service.findByIdAndDelete(id)
-    res.redirect('/services')
+app.use((err,req,res,next) => {      // Error handler
+    if(!err.message)err.message = 'Something went wrong'
+    res.render('error',{err})
 })
 
 app.listen(3000, () => {  // listening on port 3000
     console.log('Serving on port 3000')
 })
+
+
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const uri = "mongodb+srv://dotunolly:<password>@cluster0.o9exbyl.mongodb.net/?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });

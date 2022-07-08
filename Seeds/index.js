@@ -43,12 +43,21 @@ const seedDB = async () => {
     await Service.deleteMany({})
     for (const n of categories) {
         const city = cities[index].city;
-        const state = cities[index].state
-        const imageUrl = await fetchImage()
+        const state = cities[index].state 
         const price = Math.floor(Math.random() * 20) + 10; 
         const service = new Service({
+            author:'62bac6a0d78e8c3a3237b820',
             title:`I will provide ${n} services for you`,
-            image: imageUrl,
+            images:  [
+                {
+                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1656884854/Doma/bjvx9hp7kj7uunmqfgyx.jpg',
+                  filename: 'Doma/bjvx9hp7kj7uunmqfgyx'
+                },
+                {
+                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1656884854/Doma/pctgl5dirxo2xwgcdcqy.jpg',
+                  filename: 'Doma/pctgl5dirxo2xwgcdcqy'
+                }
+              ],
             description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae voluptas, quasi consectetur dolore eius sit corporis autem facere et quae iure ipsum nulla harum magnam, perspiciatis sunt aperiam porro labore.' +
             'Eligendi dolor voluptas libero, repellat possimus, cum ut sapiente quisquam voluptatem fuga non et molestiae? Nulla nostrum laboriosam tempora, magnam molestias illum nemo tenetur cupiditate pariatur, voluptatum ratione, beatae aut?' +
             ' Quidem harum esse numquam odio similique aliquid, sequi officia voluptatibus rerum vitae iusto enim quia, minima architecto explicabo fuga sapiente dolores, mollitia ipsam dignissimos sint? Quisquam numquam dolores ad expedita.',
@@ -57,7 +66,7 @@ const seedDB = async () => {
             price,
             
         })
-        service.save() 
+        await service.save() 
         index++
     }
 }
