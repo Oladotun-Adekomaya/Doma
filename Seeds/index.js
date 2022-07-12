@@ -1,7 +1,7 @@
 const axios = require('axios').default;
 const mongoose = require('mongoose');
 const Service = require('../models/service.js');
-const {categories} = require('./seedHelpers')
+const {hotels} = require('./seedHelpers')
 const { cities } = require('./cities')
 
 
@@ -16,38 +16,16 @@ mongoose.connect('mongodb://localhost:27017/doma',{
     }) 
     
 
-const seedCity = function (cities,categories) {
-    for (let index = 0; index < categories.length; index++) {
-        const city = cities[index].city;
-        const state = cities[index].state;
-        return `${city}, ${state}`
-        
-    }
-}
-
-
-
-const fetchImage = async () => {
-    try {
-        const res = await axios.get('https://api.unsplash.com/photos/random/?client_id=MyvnyUHN1P4kH0zE-T73aVkzxbbPpDIpsgx36TyFYIo&count=1')
-        image= res.data[0].urls.small
-        return image
-    } catch (error) {
-        console.log('ERROR',error);
-    }
-}
-
 index = 0
 
 const seedDB = async () => {
     await Service.deleteMany({})
-    for (const n of categories) {
-        const city = cities[index].city;
-        const state = cities[index].state 
-        const price = Math.floor(Math.random() * 20) + 10; 
+    for (const hotel of hotels) {
+        const random1000 = Math.floor(Math.random() * 1000);
+        const price = Math.floor(Math.random() * 1000) + 10; 
         const service = new Service({
             author:'62bac6a0d78e8c3a3237b820',
-            title:`I will provide ${n} services for you`,
+            title:`${hotel}`,
             images:  [
                 {
                   url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1656884854/Doma/bjvx9hp7kj7uunmqfgyx.jpg',
@@ -61,10 +39,15 @@ const seedDB = async () => {
             description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae voluptas, quasi consectetur dolore eius sit corporis autem facere et quae iure ipsum nulla harum magnam, perspiciatis sunt aperiam porro labore.' +
             'Eligendi dolor voluptas libero, repellat possimus, cum ut sapiente quisquam voluptatem fuga non et molestiae? Nulla nostrum laboriosam tempora, magnam molestias illum nemo tenetur cupiditate pariatur, voluptatum ratione, beatae aut?' +
             ' Quidem harum esse numquam odio similique aliquid, sequi officia voluptatibus rerum vitae iusto enim quia, minima architecto explicabo fuga sapiente dolores, mollitia ipsam dignissimos sint? Quisquam numquam dolores ad expedita.',
-            category: `${n}`,
-            location: `${city}, ${state}`,
+            //category: `${n}`,
+            location: `${cities[random1000].city}, ${cities[random1000].state}`,
             price,
-            
+            geometry: {
+                type : "Point", 
+                coordinates : [
+                     cities[random1000].longitude, 
+                     cities[random1000].latitude 
+                    ] }    
         })
         await service.save() 
         index++

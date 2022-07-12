@@ -14,9 +14,20 @@ ImageSchema.virtual('thumbnail').get(function (){
 
 const ServiceSchema = new Schema({
     title:String,
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     images:[ImageSchema],
     description:String,
-    category:String,
+    //category:String,
     location: String, 
     price:Number,
     author:{

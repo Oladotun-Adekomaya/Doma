@@ -1,5 +1,8 @@
 const Service = require('../models/service');
-const { cloudinary } = require('../cloudinary')
+const { cloudinary } = require('../cloudinary');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mbxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mbxToken });
 
 module.exports.index = async (req,res,next) => {  // route to display all services
     const services = await Service.find({});
@@ -11,7 +14,13 @@ module.exports.renderNewForm = (req,res) => {  // route to serve form that will 
 }
 
 module.exports.createService = async(req,res) => {  // route to post the newly created service
+    
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.service.location,
+        limit: 1
+      }).send()
     const service = new Service(req.body.service);
+    service.geometry = geoData.body.features[0].geometry;
     service.images = req.files.map(f => ({url:f.path, filename: f.filename}))
     service.author = req.user._id;
     await service.save();
