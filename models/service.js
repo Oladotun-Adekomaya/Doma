@@ -12,6 +12,10 @@ ImageSchema.virtual('thumbnail').get(function (){
     return this.url.replace('/upload', '/upload/w_200,h_200');
 });
 
+
+const opts = { toJSON: { virtuals:true } }
+
+
 const ServiceSchema = new Schema({
     title:String,
     geometry: {
@@ -38,8 +42,16 @@ const ServiceSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }]
-})
+},opts)
 
+
+
+ServiceSchema.virtual('properties.popUpMarkup').get(function (){
+    return `
+    <strong><a href="/services/${this._id}">${this.title}</a><strong>
+    <p>${this.description.substring(0,20)}...</p>
+    `;
+});
 
 // This is the middleware to delete all the reviews alongside the service
 ServiceSchema.post('findOneAndDelete', async function (doc){
@@ -52,4 +64,4 @@ ServiceSchema.post('findOneAndDelete', async function (doc){
     }
 })
 
-module.exports = mongoose.model('Service',ServiceSchema); 
+module.exports = mongoose.model('Service',ServiceSchema);

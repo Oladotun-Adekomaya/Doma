@@ -10,6 +10,8 @@ map.on('style.load', () => {
     map.setFog({}); // Set the default atmosphere style
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 const popup = new mapboxgl.Popup({ offset: 25 })
 .setHTML(`<p><b>${service.title}</b></p><p>${service.location}</p>`)
 
