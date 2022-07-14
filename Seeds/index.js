@@ -28,18 +28,15 @@ const seedDB = async () => {
             title:`${hotel}`,
             images:  [
                 {
-                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1656884854/Doma/bjvx9hp7kj7uunmqfgyx.jpg',
-                  filename: 'Doma/bjvx9hp7kj7uunmqfgyx'
+                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1657784487/Doma/adriana-saraceanu-_ixNdO62FSg-unsplash_xdzdbw.jpg',
+                  filename: 'Doma/adriana-saraceanu-_ixNdO62FSg-unsplash_xdzdbw.jpg'
                 },
                 {
-                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1656884854/Doma/pctgl5dirxo2xwgcdcqy.jpg',
-                  filename: 'Doma/pctgl5dirxo2xwgcdcqy'
+                  url: 'https://res.cloudinary.com/dotuncloud/image/upload/v1657784529/Doma/the-anam-XA6vchunFJk-unsplash_cbxbdq.jpg',
+                  filename: 'Doma/the-anam-XA6vchunFJk-unsplash_cbxbdq'
                 }
               ],
-            description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae voluptas, quasi consectetur dolore eius sit corporis autem facere et quae iure ipsum nulla harum magnam, perspiciatis sunt aperiam porro labore.' +
-            'Eligendi dolor voluptas libero, repellat possimus, cum ut sapiente quisquam voluptatem fuga non et molestiae? Nulla nostrum laboriosam tempora, magnam molestias illum nemo tenetur cupiditate pariatur, voluptatum ratione, beatae aut?' +
-            ' Quidem harum esse numquam odio similique aliquid, sequi officia voluptatibus rerum vitae iusto enim quia, minima architecto explicabo fuga sapiente dolores, mollitia ipsam dignissimos sint? Quisquam numquam dolores ad expedita.',
-            //category: `${n}`,
+            description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae voluptas, quasi consectetur dolore eius sit corporis autem facere et quae iure ipsum nulla harum magnam, perspiciatis sunt aperiam porro labore.',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             price,
             geometry: {
